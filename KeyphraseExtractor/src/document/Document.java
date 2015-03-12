@@ -3,7 +3,7 @@ package document;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import Stemmer.*;
+import stemmer.*;
 
 /**
  *
@@ -40,27 +40,24 @@ public class Document {
                         String stemmed = stemmer.stem(word); // ideally stem here...
                         // Make sure term isn't on the stop words list
                         if (!stopWords.contains(word) && !stopWords.contains(stemmed)) {
-                            // Don't re-add a term
-                            if (!terms.containsKey(word.toLowerCase())) {
-                                terms.put(stemmed, new Term(word, stemmed));
-                            }
+                            addTerm(word, stemmed);
                             // If there are still more words
                             if (words.length > i+1){
                                 String word2 = words[i+1].trim();
-                                String stem2 = word2.toLowerCase();
+                                String stem2 = stemmer.stem(word2);
                                 String combinedStem = stemmed.concat(" " + stem2); // Actually do some stemming on words[i+1]
                                 String combinedTerm = word.concat(" " + word2);
                                 // Don't end a term with a stop word
                                 if (!stopWords.contains(word2.toLowerCase())){
-                                    terms.put(combinedStem, new Term(combinedTerm, combinedStem));
+                                    addTerm(combinedTerm, combinedStem);
                                 }
                                 if (words.length > i+2){
                                     String word3 = words[i+2].trim();
-                                    String stem3 = word3.toLowerCase();
+                                    String stem3 = stemmer.stem(word3);
                                     if (!stopWords.contains(word3.toLowerCase())){
                                         combinedStem = combinedStem.concat(" " + stem3); // Actually do some stemming on words[i+2]
                                         combinedTerm = combinedTerm.concat(" " + word3);
-                                        terms.put(combinedStem, new Term(combinedTerm, combinedStem));
+                                        addTerm(combinedTerm, combinedStem);
                                     }
                                 }
                             }
@@ -69,14 +66,12 @@ public class Document {
                 }
             }
         }
-
     }
-
-    private String stem(String str) {
-        if (str.length() < STEM_LENGTH) {
-            return str;
+    
+    private void addTerm(String term, String stemmed){
+        if (!terms.containsKey(stemmed)){
+            terms.put(stemmed, new Term(term, stemmed));
         }
-        return str.substring(0, length - STEM_LENGTH);
     }
 
     public String getText() {
