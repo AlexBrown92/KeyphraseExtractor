@@ -30,6 +30,12 @@ public class Term {
     private int directLexicalChain;
     private int lexicalChainSpan;
     private int directLexicalChainSpan;
+
+    public Term(String text, String stemmedText) {
+        this.text = text;
+        this.stemmedText = stemmedText;
+    }
+    
     
     
 }

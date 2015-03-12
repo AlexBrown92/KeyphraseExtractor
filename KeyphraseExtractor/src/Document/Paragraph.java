@@ -15,11 +15,19 @@ public class Paragraph {
         String[] s_temp = text.split("\\.");
         sentences = new ArrayList<>();
         for (String sentence : s_temp) {
-            if (!sentence.equals("\r") && !sentence.equals("")){
+            if (!sentence.equals("\r") && !sentence.trim().isEmpty()){
                 sentences.add(sentence);
             }
         }
         
+    }
+
+    public ArrayList<String> getSentences() {
+        return sentences;
+    }
+
+    public void setSentences(ArrayList<String> sentences) {
+        this.sentences = sentences;
     }
 
     @Override
