@@ -23,54 +23,85 @@ public class Document {
         this.text = text;
         this.paragraphs = new ArrayList<>();
         this.terms = new HashMap<>();
-        String[] p_temp = text.split("\n");
+        String[] pTemp = text.split("\n");
         IteratedLovinsStemmer stemmer = new IteratedLovinsStemmer();
+        this.length = text.replace("\n\r", " ").replace("\r\n", " ").split(" ").length;
+
+        int wordNum = 0;
 
         // Identify Terms
-        for (String paragraph : p_temp) {
+        for (int pCount = 0; pCount < pTemp.length; pCount++) {
+            String paragraph = pTemp[pCount];
+            //for (String paragraph : pTemp) {
             // Check to see if paragraph is empty
             if (!paragraph.equals("\r") && !paragraph.trim().isEmpty()) {
                 Paragraph p = new Paragraph(paragraph);
                 paragraphs.add(p);
-                for (String s : p.getSentences()) {
+                int paragraphSize = p.toString().split(" ").length;
+                for (int sCount = 0; sCount < p.getSentences().size(); sCount++) {
+                    int wordInParagraph = 0;
+                    String s = p.getSentences().get(sCount);
+                    //for (String s : p.getSentences()) {
                     s = s.replaceAll("[^A-Za-z0-9 '-]", "");
                     String[] words = s.split(" ");
                     for (int i = 0; i < words.length; i++) {
                         String word = words[i].trim();
-                        String stemmed = stemmer.stem(word); // ideally stem here...
+                        String stemmed = stemmer.stem(word.toLowerCase());
                         // Make sure term isn't on the stop words list
                         if (!stopWords.contains(word) && !stopWords.contains(stemmed)) {
-                            addTerm(word, stemmed);
+                            addTerm(word, stemmed, ((double) wordNum / (double) this.length), pCount, ((double) i / (double) words.length), ((double) wordInParagraph / (double) paragraphSize), sCount);
                             // If there are still more words
-                            if (words.length > i+1){
-                                String word2 = words[i+1].trim();
-                                String stem2 = stemmer.stem(word2);
-                                String combinedStem = stemmed.concat(" " + stem2); // Actually do some stemming on words[i+1]
+                            if (words.length > i + 1) {
+                                String word2 = words[i + 1].trim();
+                                String stem2 = stemmer.stem(word2.toLowerCase());
+                                String combinedStem = stemmed.concat(" " + stem2);
                                 String combinedTerm = word.concat(" " + word2);
                                 // Don't end a term with a stop word
-                                if (!stopWords.contains(word2.toLowerCase())){
-                                    addTerm(combinedTerm, combinedStem);
+                                if (!stopWords.contains(word2.toLowerCase())) {
+                                    addTerm(combinedTerm, combinedStem, ((double) wordNum / (double) this.length), pCount, ((double) i / (double) words.length), ((double) wordInParagraph / (double) paragraphSize), sCount);
                                 }
-                                if (words.length > i+2){
-                                    String word3 = words[i+2].trim();
-                                    String stem3 = stemmer.stem(word3);
-                                    if (!stopWords.contains(word3.toLowerCase())){
-                                        combinedStem = combinedStem.concat(" " + stem3); // Actually do some stemming on words[i+2]
+                                if (words.length > i + 2) {
+                                    String word3 = words[i + 2].trim();
+                                    String stem3 = stemmer.stem(word3.toLowerCase());
+                                    if (!stopWords.contains(word3.toLowerCase())) {
+                                        combinedStem = combinedStem.concat(" " + stem3);
                                         combinedTerm = combinedTerm.concat(" " + word3);
-                                        addTerm(combinedTerm, combinedStem);
+                                        addTerm(combinedTerm, combinedStem, ((double) wordNum / (double) this.length), pCount, ((double) i / (double) words.length), ((double) wordInParagraph / (double) paragraphSize), sCount);
                                     }
                                 }
                             }
                         }
+                        wordInParagraph++;
+                        wordNum++;
                     }
                 }
             }
         }
     }
-    
-    private void addTerm(String term, String stemmed){
-        if (!terms.containsKey(stemmed)){
-            terms.put(stemmed, new Term(term, stemmed));
+
+    private void addTerm(String term, String stemmed, double position, int paragraph, double sentencePos, double paragraphPos, int sentence) {
+        if (term.length() > 3) {
+            if (!terms.containsKey(stemmed)) {
+                terms.put(stemmed, new Term(term, stemmed, position, paragraph, sentencePos, paragraphPos));
+                if ((paragraph == 0) && (sentence == 0)) {
+                    terms.get(stemmed).setInFirstSentence(true);
+                }
+            } else {
+                terms.get(stemmed).addOccurrence(term);
+                terms.get(stemmed).setLastParagraph(paragraph);
+                terms.get(stemmed).setAvgPos((terms.get(stemmed).getAvgPos() + position) / 2);
+            }
+            if (position <= 0.2) {
+                terms.get(stemmed).incrementFreqInFirst20();
+                if (position <= 0.1) {
+                    terms.get(stemmed).incrementFreqInFirst10();
+                }
+            } else if (position >= 0.8) {
+                terms.get(stemmed).incrementFreqInLast20();
+                if (position >= 0.9) {
+                    terms.get(stemmed).incrementFreqInLast10();
+                }
+            }
         }
     }
 
@@ -113,7 +144,5 @@ public class Document {
     public void setStopWords(ArrayList<String> stopWords) {
         this.stopWords = stopWords;
     }
-    
-    
 
 }

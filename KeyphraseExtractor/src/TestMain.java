@@ -7,7 +7,6 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-
 /**
  *
  * @author Alex
@@ -21,24 +20,24 @@ public class TestMain {
         File in = new File("D:\\Dropbox\\Work\\Year 3\\Project\\Resources\\input_test.txt");
         Scanner scan = new Scanner(in);
         scan.useDelimiter("\\Z");
-        String text = scan.next();   
-        
+        String text = scan.next();
+
         File stopWordsFile = new File("D:\\Dropbox\\Work\\Year 3\\Project\\Resources\\mysql_stopwords.txt");
         Scanner stopWordsScan = new Scanner(stopWordsFile);
         ArrayList<String> stopWords = new ArrayList<>();
-        while (stopWordsScan.hasNextLine()){
+        while (stopWordsScan.hasNextLine()) {
             stopWords.add(stopWordsScan.nextLine());
         }
         stopWords.add("-"); // Needed to stop problems with spaced hyphons
         stopWords.add("a"); // Not sure why this was ever missing
         Document d = new Document(text, stopWords);
-        
+
         for (Paragraph p : d.getParagraphs()) {
             System.out.println(p.toString());
         }
         for (Term t : d.getTerms().values()) {
-            System.out.println(t.getStemmedText() + " " + t.getFrequency()+ " " + t.getMostFrequentOccurrence());
+            System.out.println(t.getFreqInFirst10() + " " + t.getFreqInFirst20() + " " + t.getFreqInLast10() + " " + t.getFreqInLast20() + " "+ t.getFrequency() + " " + t.getStemmedText() + " " + t.getMostFrequentOccurrence());
         }
     }
-    
+
 }
