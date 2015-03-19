@@ -89,7 +89,9 @@ public class Document {
             } else {
                 terms.get(stemmed).addOccurrence(term);
                 terms.get(stemmed).setLastParagraph(paragraph);
-                terms.get(stemmed).setAvgPos((terms.get(stemmed).getAvgPos() + position) / 2);
+                terms.get(stemmed).updateAvgPos(position);
+                terms.get(stemmed).updateAverageSentencePos(sentencePos);
+                terms.get(stemmed).updateAverageParagraphPos(paragraphPos);
             }
             if (position <= 0.2) {
                 terms.get(stemmed).incrementFreqInFirst20();
@@ -104,6 +106,8 @@ public class Document {
             }
         }
     }
+    
+    
 
     public String getText() {
         return text;

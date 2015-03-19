@@ -83,6 +83,24 @@ public class Term {
         }
     }
     
+    public void updateAvgPos(double newValue){
+        this.avgPos = recalcAvg(this.avgPos, newValue, this.frequency);
+    }
+    
+    public void updateAverageSentencePos(double newValue){
+        this.averageSentencePos = recalcAvg(this.averageSentencePos, newValue, this.frequency);
+    }
+    
+    public void updateAverageParagraphPos(double newValue){
+        this.averageParagraphPos = recalcAvg(this.averageParagraphPos, newValue, this.frequency);
+    }
+    
+    private double recalcAvg(double currentAvg, double newValue, int newTotal){
+        double newAvg = currentAvg * (newTotal -1);
+        newAvg = (newAvg + newValue) / newTotal;
+        return newAvg;
+    }
+    
     public void incrementFreqInFirst20(){
         this.freqInFirst20 ++;
     }

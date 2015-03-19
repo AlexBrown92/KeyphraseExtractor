@@ -36,7 +36,7 @@ public class TestMain {
             System.out.println(p.toString());
         }
         for (Term t : d.getTerms().values()) {
-            System.out.println(t.getFreqInFirst10() + " " + t.getFreqInFirst20() + " " + t.getFreqInLast10() + " " + t.getFreqInLast20() + " "+ t.getFrequency() + " " + t.getStemmedText() + " " + t.getMostFrequentOccurrence());
+            System.out.println(t.getFrequency() + " " + t.getAvgPos() + " "  + t.getAverageParagraphPos() + " " + t.getAverageSentencePos() + " " + t.getMostFrequentOccurrence());
         }
     }
 
