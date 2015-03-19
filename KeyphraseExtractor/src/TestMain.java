@@ -1,6 +1,7 @@
 
-import Document.Document;
-import Document.Paragraph;
+import document.Document;
+import document.Paragraph;
+import document.Term;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -29,14 +30,14 @@ public class TestMain {
             stopWords.add(stopWordsScan.nextLine());
         }
         stopWords.add("-"); // Needed to stop problems with spaced hyphons
-        stopWords.add("a"); // Not sure why this was ever missing...
+        stopWords.add("a"); // Not sure why this was ever missing
         Document d = new Document(text, stopWords);
         
         for (Paragraph p : d.getParagraphs()) {
             System.out.println(p.toString());
         }
-        for (String term : d.getTerms().keySet()) {
-            System.out.println(term);
+        for (Term t : d.getTerms().values()) {
+            System.out.println(t.getStemmedText() + " " + t.getFrequency()+ " " + t.getMostFrequentOccurrence());
         }
     }
     
