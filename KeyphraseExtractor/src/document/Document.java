@@ -15,7 +15,6 @@ public class Document {
     private int length;
     private HashMap<String, Term> terms;
     private ArrayList<Paragraph> paragraphs;
-    private final int STEM_LENGTH = 3;
     private ArrayList<String> stopWords;
 
     public Document(String text, ArrayList<String> stopWords) {
