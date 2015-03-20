@@ -12,7 +12,7 @@ public class Paragraph {
     ArrayList<String> sentences;
 
     public Paragraph(String text) {
-        String[] s_temp = text.split("\\.");
+        String[] s_temp = text.split("\\.?!");
         sentences = new ArrayList<>();
         for (String sentence : s_temp) {
             if (!sentence.equals("\r") && !sentence.trim().isEmpty()){
