@@ -20,9 +20,9 @@ public class Term {
     private int lastSentence;
     private int numberOfWords;
     private boolean inFirstSentence;
-    private boolean inLastSentence;
-    private boolean hasProperNoun;
-    private int x2Score;
+    private boolean inLastSentence; // TODO
+    private boolean hasProperNoun; // TODO?
+    private int x2Score; // TODO?
     private int firstParagraph;
     private int lastParagraph;
     private double averageSentencePos;
@@ -31,10 +31,10 @@ public class Term {
     private int freqInFirst20;
     private int freqInLast10;
     private int freqInLast20;
-    private int lexicalChain;
-    private int directLexicalChain;
-    private int lexicalChainSpan;
-    private int directLexicalChainSpan;
+    private int freqInFirst1P;
+    private int freqInFirst2P;
+    private int freqInLast1P; // TODO
+    private int freqInLast2P; // TODO
 
     public Term(String text, String stemmedText, double position, int paragraph, double sentencePos, double paragraphPos) {
         this.occurrences = new HashMap<>();
@@ -95,11 +95,19 @@ public class Term {
         this.averageParagraphPos = recalcAvg(this.averageParagraphPos, newValue, this.frequency);
     }
     
+    // Used to recalculate a mean with a new value added
     private double recalcAvg(double currentAvg, double newValue, int newTotal){
         double newAvg = currentAvg * (newTotal -1);
         newAvg = (newAvg + newValue) / newTotal;
         return newAvg;
     }
+    
+    /*
+    *
+    * The following functions are to make life easier for simply incrementing 
+    * values
+    *
+    */
     
     public void incrementFreqInFirst20(){
         this.freqInFirst20 ++;
@@ -116,6 +124,28 @@ public class Term {
     public void incrementFreqInLast10(){
         this.freqInLast10 ++;
     }
+    
+    public void incrementFreqInFirst1P(){
+        this.freqInFirst1P ++;
+    }
+    
+    public void incrementFreqInFirst2P(){
+        this.freqInFirst2P ++;
+    }
+    
+    public void incrementFreqInLast1P(){
+        this.freqInLast1P ++;
+    }
+    
+    public void incrementFreqInLast2P(){
+        this.freqInLast2P ++;
+    }
+    
+    /*
+    *
+    * Only Getters and Setters Beyond here
+    *
+    */
 
     public Map getOccurrences() {
         return occurrences;
@@ -277,36 +307,36 @@ public class Term {
         this.freqInLast20 = freqInLast20;
     }
 
-    public int getLexicalChain() {
-        return lexicalChain;
+    public int getFreqInFirst1P() {
+        return freqInFirst1P;
     }
 
-    public void setLexicalChain(int lexicalChain) {
-        this.lexicalChain = lexicalChain;
+    public void setFreqInFirst1P(int freqInFirst1P) {
+        this.freqInFirst1P = freqInFirst1P;
     }
 
-    public int getDirectLexicalChain() {
-        return directLexicalChain;
+    public int getFreqInFirst2P() {
+        return freqInFirst2P;
     }
 
-    public void setDirectLexicalChain(int directLexicalChain) {
-        this.directLexicalChain = directLexicalChain;
+    public void setFreqInFirst2P(int freqInFirst2P) {
+        this.freqInFirst2P = freqInFirst2P;
     }
 
-    public int getLexicalChainSpan() {
-        return lexicalChainSpan;
+    public int getFreqInLast1P() {
+        return freqInLast1P;
     }
 
-    public void setLexicalChainSpan(int lexicalChainSpan) {
-        this.lexicalChainSpan = lexicalChainSpan;
+    public void setFreqInLast1P(int freqInLast1P) {
+        this.freqInLast1P = freqInLast1P;
     }
 
-    public int getDirectLexicalChainSpan() {
-        return directLexicalChainSpan;
+    public int getFreqInLast2P() {
+        return freqInLast2P;
     }
 
-    public void setDirectLexicalChainSpan(int directLexicalChainSpan) {
-        this.directLexicalChainSpan = directLexicalChainSpan;
+    public void setFreqInLast2P(int freqInLast2P) {
+        this.freqInLast2P = freqInLast2P;
     }
 
 }
