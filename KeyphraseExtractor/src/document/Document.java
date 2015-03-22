@@ -110,7 +110,6 @@ public class Document {
                     terms.get(stemmed).incrementFreqInFirst1P();
                 }
             }
-            // Not working atm, paragraps.size() increments as time goes on...
             if (paragraph >= (paragraphs.size() - 2)) {
                 terms.get(stemmed).incrementFreqInLast2P();
                 if (paragraph >= (paragraphs.size() - 1)) {

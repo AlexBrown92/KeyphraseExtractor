@@ -33,8 +33,8 @@ public class Term {
     private int freqInLast20;
     private int freqInFirst1P;
     private int freqInFirst2P;
-    private int freqInLast1P; // TODO
-    private int freqInLast2P; // TODO
+    private int freqInLast1P; 
+    private int freqInLast2P; 
 
     public Term(String text, String stemmedText, double position, int paragraph, double sentencePos, double paragraphPos) {
         this.occurrences = new HashMap<>();
