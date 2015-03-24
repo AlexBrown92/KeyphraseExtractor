@@ -12,33 +12,33 @@ public class Term {
     private String stemmedText;
     private Map occurrences;
 
-    private int frequency;
+    private double frequency;
     private double firstPos;
     private double lastPos;
     private double avgPos;
-    private int firstSentence;
-    private int lastSentence;
-    private int numberOfWords;
+    private short firstSentence;
+    private short lastSentence;
+    private short numberOfWords;
     private boolean inFirstSentence;
     private boolean inLastSentence; // TODO
     private boolean hasProperNoun; // TODO?
     private int x2Score; // TODO?
-    private int firstParagraph;
-    private int lastParagraph;
+    private short firstParagraph;
+    private short lastParagraph;
     private double averageSentencePos;
     private double averageParagraphPos;
-    private int freqInFirst10;
-    private int freqInFirst20;
-    private int freqInLast10;
-    private int freqInLast20;
-    private int freqInFirst1P;
-    private int freqInFirst2P;
-    private int freqInLast1P; 
-    private int freqInLast2P; 
+    private double freqInFirst10;
+    private double freqInFirst20;
+    private double freqInLast10;
+    private double freqInLast20;
+    private double freqInFirst1P;
+    private double freqInFirst2P;
+    private double freqInLast1P; 
+    private double freqInLast2P; 
 
-    public Term(String text, String stemmedText, double position, int paragraph, double sentencePos, double paragraphPos) {
+    public Term(String text, String stemmedText, double position, short paragraph, double sentencePos, double paragraphPos, int docLength) {
         this.occurrences = new HashMap<>();
-        this.addOccurrence(text);
+        this.addOccurrence(text, docLength);
         this.stemmedText = stemmedText;
         this.firstPos = position;
         this.avgPos = position;
@@ -47,7 +47,7 @@ public class Term {
         this.lastParagraph = paragraph;
         this.averageParagraphPos = paragraphPos;
         this.averageSentencePos = sentencePos;
-        this.numberOfWords = text.split(" ").length;
+        this.numberOfWords = (short) text.split(" ").length;
         this.freqInFirst10 = 0;
         this.freqInFirst20 = 0;
         this.freqInLast10 = 0;
@@ -74,8 +74,8 @@ public class Term {
         this.stemmedText = stemmedText;
     }
 
-    public void addOccurrence(String term) {
-        this.frequency++;
+    public void addOccurrence(String term, int docLength) {
+        this.frequency = ((double) this.getTermCount() + 1) / (double) docLength;
         if (this.occurrences.containsKey(term)) {
             this.occurrences.put(term, ((int) this.occurrences.get(term) + 1));
         } else {
@@ -84,15 +84,15 @@ public class Term {
     }
     
     public void updateAvgPos(double newValue){
-        this.avgPos = recalcAvg(this.avgPos, newValue, this.frequency);
+        this.avgPos = recalcAvg(this.avgPos, newValue, this.getTermCount());
     }
     
     public void updateAverageSentencePos(double newValue){
-        this.averageSentencePos = recalcAvg(this.averageSentencePos, newValue, this.frequency);
+        this.averageSentencePos = recalcAvg(this.averageSentencePos, newValue, this.getTermCount());
     }
     
     public void updateAverageParagraphPos(double newValue){
-        this.averageParagraphPos = recalcAvg(this.averageParagraphPos, newValue, this.frequency);
+        this.averageParagraphPos = recalcAvg(this.averageParagraphPos, newValue, this.getTermCount());
     }
     
     // Used to recalculate a mean with a new value added
@@ -102,6 +102,14 @@ public class Term {
         return newAvg;
     }
     
+    public int getTermCount(){
+        int count = 0;
+        for (Object occCount : this.occurrences.values()) {
+            count += (int) occCount;
+        }
+        return count;
+    }
+    
     /*
     *
     * The following functions are to make life easier for simply incrementing 
@@ -109,36 +117,36 @@ public class Term {
     *
     */
     
-    public void incrementFreqInFirst20(){
-        this.freqInFirst20 ++;
+    public void incrementFreqInFirst20(int docLength){
+        this.freqInFirst20 =+  1 / (0.2 * ((double) docLength));
     }
     
-    public void incrementFreqInFirst10(){
-        this.freqInFirst10 ++;
+    public void incrementFreqInFirst10(int docLength){
+        this.freqInFirst10 += 1 / (0.1 * ((double) docLength));
     }
     
-    public void incrementFreqInLast20(){
-        this.freqInLast20 ++;
+    public void incrementFreqInLast20(int docLength){
+        this.freqInLast20 += 1 / (0.2 * ((double) docLength));
     }
     
-    public void incrementFreqInLast10(){
-        this.freqInLast10 ++;
+    public void incrementFreqInLast10(int docLength){
+        this.freqInLast10 += 1 / (0.1 * ((double) docLength));
     }
     
-    public void incrementFreqInFirst1P(){
-        this.freqInFirst1P ++;
+    public void incrementFreqInFirst1P(int paraLength){
+        this.freqInFirst1P += 1 / (double) paraLength;
     }
     
-    public void incrementFreqInFirst2P(){
-        this.freqInFirst2P ++;
+    public void incrementFreqInFirst2P(int paraLength){
+        this.freqInFirst2P += 1 / (double) paraLength;
     }
     
-    public void incrementFreqInLast1P(){
-        this.freqInLast1P ++;
+    public void incrementFreqInLast1P(int paraLength){
+        this.freqInLast1P += 1 / (double) paraLength;
     }
     
-    public void incrementFreqInLast2P(){
-        this.freqInLast2P ++;
+    public void incrementFreqInLast2P(int paraLength){
+        this.freqInLast2P += 1 / (double) paraLength;
     }
     
     /*
@@ -155,11 +163,11 @@ public class Term {
         this.occurrences = occurrences;
     }
 
-    public int getFrequency() {
+    public double getFrequency() {
         return frequency;
     }
 
-    public void setFrequency(int frequency) {
+    public void setFrequency(double frequency) {
         this.frequency = frequency;
     }
 
@@ -187,19 +195,19 @@ public class Term {
         this.avgPos = avgPos;
     }
 
-    public int getFirstSentence() {
+    public short getFirstSentence() {
         return firstSentence;
     }
 
-    public void setFirstSentence(int firstSentence) {
+    public void setFirstSentence(short firstSentence) {
         this.firstSentence = firstSentence;
     }
 
-    public int getLastSentence() {
+    public short getLastSentence() {
         return lastSentence;
     }
 
-    public void setLastSentence(int lastSentence) {
+    public void setLastSentence(short lastSentence) {
         this.lastSentence = lastSentence;
     }
 
@@ -207,7 +215,7 @@ public class Term {
         return numberOfWords;
     }
 
-    public void setNumberOfWords(int numberOfWords) {
+    public void setNumberOfWords(short numberOfWords) {
         this.numberOfWords = numberOfWords;
     }
 
@@ -243,19 +251,19 @@ public class Term {
         this.x2Score = x2Score;
     }
 
-    public int getFirstParagraph() {
+    public short getFirstParagraph() {
         return firstParagraph;
     }
 
-    public void setFirstParagraph(int firstParagraph) {
+    public void setFirstParagraph(short firstParagraph) {
         this.firstParagraph = firstParagraph;
     }
 
-    public int getLastParagraph() {
+    public short getLastParagraph() {
         return lastParagraph;
     }
 
-    public void setLastParagraph(int lastParagraph) {
+    public void setLastParagraph(short lastParagraph) {
         this.lastParagraph = lastParagraph;
     }
 
@@ -275,67 +283,67 @@ public class Term {
         this.averageParagraphPos = averageParagraphPos;
     }
 
-    public int getFreqInFirst10() {
+    public double getFreqInFirst10() {
         return freqInFirst10;
     }
 
-    public void setFreqInFirst10(int freqInFirst10) {
+    public void setFreqInFirst10(double freqInFirst10) {
         this.freqInFirst10 = freqInFirst10;
     }
 
-    public int getFreqInFirst20() {
+    public double getFreqInFirst20() {
         return freqInFirst20;
     }
 
-    public void setFreqInFirst20(int freqInFirst20) {
+    public void setFreqInFirst20(double freqInFirst20) {
         this.freqInFirst20 = freqInFirst20;
     }
 
-    public int getFreqInLast10() {
+    public double getFreqInLast10() {
         return freqInLast10;
     }
 
-    public void setFreqInLast10(int freqInLast10) {
+    public void setFreqInLast10(double freqInLast10) {
         this.freqInLast10 = freqInLast10;
     }
 
-    public int getFreqInLast20() {
+    public double getFreqInLast20() {
         return freqInLast20;
     }
 
-    public void setFreqInLast20(int freqInLast20) {
+    public void setFreqInLast20(double freqInLast20) {
         this.freqInLast20 = freqInLast20;
     }
 
-    public int getFreqInFirst1P() {
+    public double getFreqInFirst1P() {
         return freqInFirst1P;
     }
 
-    public void setFreqInFirst1P(int freqInFirst1P) {
+    public void setFreqInFirst1P(double freqInFirst1P) {
         this.freqInFirst1P = freqInFirst1P;
     }
 
-    public int getFreqInFirst2P() {
+    public double getFreqInFirst2P() {
         return freqInFirst2P;
     }
 
-    public void setFreqInFirst2P(int freqInFirst2P) {
+    public void setFreqInFirst2P(double freqInFirst2P) {
         this.freqInFirst2P = freqInFirst2P;
     }
 
-    public int getFreqInLast1P() {
+    public double getFreqInLast1P() {
         return freqInLast1P;
     }
 
-    public void setFreqInLast1P(int freqInLast1P) {
+    public void setFreqInLast1P(double freqInLast1P) {
         this.freqInLast1P = freqInLast1P;
     }
 
-    public int getFreqInLast2P() {
+    public double getFreqInLast2P() {
         return freqInLast2P;
     }
 
-    public void setFreqInLast2P(int freqInLast2P) {
+    public void setFreqInLast2P(double freqInLast2P) {
         this.freqInLast2P = freqInLast2P;
     }
 

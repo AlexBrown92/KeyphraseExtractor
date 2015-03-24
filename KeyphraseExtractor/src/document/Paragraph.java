@@ -29,6 +29,10 @@ public class Paragraph {
     public void setSentences(ArrayList<String> sentences) {
         this.sentences = sentences;
     }
+    
+    public int getLength(){
+        return this.toString().split(" ").length;
+    }
 
     @Override
     public String toString() {

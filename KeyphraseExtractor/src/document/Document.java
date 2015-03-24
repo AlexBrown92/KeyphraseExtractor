@@ -10,15 +10,11 @@ import stemmer.*;
  */
 public class Document {
 
-    private String text;
     private int length;
     private HashMap<String, Term> terms;
     private ArrayList<Paragraph> paragraphs;
-    private ArrayList<String> stopWords;
 
     public Document(String text, ArrayList<String> stopWords) {
-        this.stopWords = stopWords;
-        this.text = text;
         this.paragraphs = new ArrayList<>();
         this.terms = new HashMap<>();
         String[] pTemp = text.split("\n");
@@ -26,6 +22,8 @@ public class Document {
         this.length = text.replace("\n\r", " ").replace("\r\n", " ").split(" ").length;
 
         int wordNum = 0;
+        
+        // Populate Paragraphs ArrayList
         for (String para : pTemp) {
             // Check to see if paragraph is empty
             if (!para.equals("\r") && !para.trim().isEmpty()) {
@@ -35,10 +33,10 @@ public class Document {
         }
 
         // Identify Terms
-        for (int pCount = 0; pCount < paragraphs.size(); pCount++) {
+        for (short pCount = 0; pCount < paragraphs.size(); pCount++) {
             Paragraph p = paragraphs.get(pCount);
             int paragraphSize = p.toString().split(" ").length;
-            for (int sCount = 0; sCount < p.getSentences().size(); sCount++) {
+            for (short sCount = 0; sCount < p.getSentences().size(); sCount++) {
                 int wordInParagraph = 0;
                 String s = p.getSentences().get(sCount);
                 //for (String s : p.getSentences()) {
@@ -77,54 +75,56 @@ public class Document {
             }
 
         }
+        // For performance reasons, get rid of any term with a frequency of 1
+        ArrayList<String> removeList = new ArrayList<>();
+        for (String key : terms.keySet()) {
+            if (terms.get(key).getTermCount()== 1){
+                removeList.add(key);
+            }
+        }
+        for (String key : removeList) {
+            terms.remove(key);
+        }
     }
 
-    private void addTerm(String term, String stemmed, double position, int paragraph, double sentencePos, double paragraphPos, int sentence) {
+    private void addTerm(String term, String stemmed, double position, short paragraph, double sentencePos, double paragraphPos, int sentence) {
         if (term.length() > 3) {
             if (!terms.containsKey(stemmed)) {
-                terms.put(stemmed, new Term(term, stemmed, position, paragraph, sentencePos, paragraphPos));
+                terms.put(stemmed, new Term(term, stemmed, position, paragraph, sentencePos, paragraphPos, this.length));
                 if ((paragraph == 0) && (sentence == 0)) {
                     terms.get(stemmed).setInFirstSentence(true);
                 }
             } else {
-                terms.get(stemmed).addOccurrence(term);
+                terms.get(stemmed).addOccurrence(term, this.length);
                 terms.get(stemmed).setLastParagraph(paragraph);
                 terms.get(stemmed).updateAvgPos(position);
                 terms.get(stemmed).updateAverageSentencePos(sentencePos);
                 terms.get(stemmed).updateAverageParagraphPos(paragraphPos);
             }
             if (position <= 0.2) {
-                terms.get(stemmed).incrementFreqInFirst20();
+                terms.get(stemmed).incrementFreqInFirst20(this.length);
                 if (position <= 0.1) {
-                    terms.get(stemmed).incrementFreqInFirst10();
+                    terms.get(stemmed).incrementFreqInFirst10(this.length);
                 }
             } else if (position >= 0.8) {
-                terms.get(stemmed).incrementFreqInLast20();
+                terms.get(stemmed).incrementFreqInLast20(this.length);
                 if (position >= 0.9) {
-                    terms.get(stemmed).incrementFreqInLast10();
+                    terms.get(stemmed).incrementFreqInLast10(this.length);
                 }
             }
             if (paragraph < 2) {
-                terms.get(stemmed).incrementFreqInFirst2P();
+                terms.get(stemmed).incrementFreqInFirst2P((this.paragraphs.get(0).getLength() + this.paragraphs.get(1).getLength()));
                 if (paragraph == 0) {
-                    terms.get(stemmed).incrementFreqInFirst1P();
+                    terms.get(stemmed).incrementFreqInFirst1P(this.paragraphs.get(0).getLength());
                 }
             }
             if (paragraph >= (paragraphs.size() - 2)) {
-                terms.get(stemmed).incrementFreqInLast2P();
+                terms.get(stemmed).incrementFreqInLast2P((this.paragraphs.get(this.paragraphs.size()-1).getLength() + this.paragraphs.get(this.paragraphs.size()-2).getLength()));
                 if (paragraph >= (paragraphs.size() - 1)) {
-                    terms.get(stemmed).incrementFreqInLast1P();
+                    terms.get(stemmed).incrementFreqInLast1P(this.paragraphs.get(this.paragraphs.size()-1).getLength());
                 }
             }
         }
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
     }
 
     public int getLength() {
@@ -149,14 +149,6 @@ public class Document {
 
     public void setParagraphs(ArrayList<Paragraph> paragraphs) {
         this.paragraphs = paragraphs;
-    }
-
-    public ArrayList<String> getStopWords() {
-        return stopWords;
-    }
-
-    public void setStopWords(ArrayList<String> stopWords) {
-        this.stopWords = stopWords;
     }
 
 }
