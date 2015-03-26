@@ -12,31 +12,31 @@ public class Term {
     private String stemmedText;
     private Map occurrences;
 
-    private double frequency;
-    private double firstPos;
-    private double lastPos;
-    private double avgPos;
-    private short firstSentence;
-    private short lastSentence;
-    private short numberOfWords;
-    private boolean inFirstSentence;
+    private double frequency; // 0
+    private double firstPos;  // 1
+    private double lastPos; // 2
+    private double avgPos; // 3
+    private double firstSentence; // 4
+    private double lastSentence; // 5
+    private short numberOfWords; 
+    private boolean inFirstSentence; // 6
     private boolean inLastSentence; // TODO
     private boolean hasProperNoun; // TODO?
     private int x2Score; // TODO?
-    private short firstParagraph;
-    private short lastParagraph;
-    private double averageSentencePos;
-    private double averageParagraphPos;
-    private double freqInFirst10;
-    private double freqInFirst20;
-    private double freqInLast10;
-    private double freqInLast20;
-    private double freqInFirst1P;
-    private double freqInFirst2P;
-    private double freqInLast1P; 
-    private double freqInLast2P; 
+    private double firstParagraph; // 7
+    private double lastParagraph; // 8
+    private double averageSentencePos; // 9
+    private double averageParagraphPos; // 10
+    private double freqInFirst10; // 11
+    private double freqInFirst20; // 12
+    private double freqInLast10; // 13
+    private double freqInLast20; // 14
+    private double freqInFirst1P; // 15
+    private double freqInFirst2P; // 16
+    private double freqInLast1P; // 17
+    private double freqInLast2P; // 18
 
-    public Term(String text, String stemmedText, double position, short paragraph, double sentencePos, double paragraphPos, int docLength) {
+    public Term(String text, String stemmedText, double position, double paragraph, double sentencePos, double paragraphPos, int docLength) {
         this.occurrences = new HashMap<>();
         this.addOccurrence(text, docLength);
         this.stemmedText = stemmedText;
@@ -195,19 +195,19 @@ public class Term {
         this.avgPos = avgPos;
     }
 
-    public short getFirstSentence() {
+    public double getFirstSentence() {
         return firstSentence;
     }
 
-    public void setFirstSentence(short firstSentence) {
+    public void setFirstSentence(double firstSentence) {
         this.firstSentence = firstSentence;
     }
 
-    public short getLastSentence() {
+    public double getLastSentence() {
         return lastSentence;
     }
 
-    public void setLastSentence(short lastSentence) {
+    public void setLastSentence(double lastSentence) {
         this.lastSentence = lastSentence;
     }
 
@@ -251,19 +251,19 @@ public class Term {
         this.x2Score = x2Score;
     }
 
-    public short getFirstParagraph() {
+    public double getFirstParagraph() {
         return firstParagraph;
     }
 
-    public void setFirstParagraph(short firstParagraph) {
+    public void setFirstParagraph(double firstParagraph) {
         this.firstParagraph = firstParagraph;
     }
 
-    public short getLastParagraph() {
+    public double getLastParagraph() {
         return lastParagraph;
     }
 
-    public void setLastParagraph(short lastParagraph) {
+    public void setLastParagraph(double lastParagraph) {
         this.lastParagraph = lastParagraph;
     }
 

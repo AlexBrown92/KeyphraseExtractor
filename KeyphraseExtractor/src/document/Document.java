@@ -90,7 +90,7 @@ public class Document {
     private void addTerm(String term, String stemmed, double position, short paragraph, double sentencePos, double paragraphPos, int sentence) {
         if (term.length() > 3) {
             if (!terms.containsKey(stemmed)) {
-                terms.put(stemmed, new Term(term, stemmed, position, paragraph, sentencePos, paragraphPos, this.length));
+                terms.put(stemmed, new Term(term, stemmed, position, (double) paragraph / (double) this.paragraphs.size(), sentencePos, paragraphPos, this.length));
                 if ((paragraph == 0) && (sentence == 0)) {
                     terms.get(stemmed).setInFirstSentence(true);
                 }
