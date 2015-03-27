@@ -2,6 +2,7 @@
 import document.Document;
 import document.Paragraph;
 import document.Term;
+import ga.algorithm.GA;
 import ga.data.TestDocument;
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,6 +32,8 @@ public class TestMain {
         }
         stopWords.add("-"); // Needed to stop problems with spaced hyphons
         stopWords.add("a"); // Not sure why this was ever missing
+        
+        GA ga = new GA();
 /*
          File in = new File("D:\\Dropbox\\Work\\Year 3\\Project\\Resources\\input_test.txt");
          //File in = new File("D:\\Dropbox\\Work\\Year 3\\Project\\Datasets\\MAUI\\MAUI\\fao30\\all\\a0011e00.txt");
@@ -38,10 +41,10 @@ public class TestMain {
          scan.useDelimiter("\\Z");
          String text = scan.next();
          */
-        File folder = new File("D:\\Dropbox\\Work\\Year 3\\Project\\Datasets\\MAUI\\MAUI\\citeulike180\\all\\");
+        //File folder = new File("D:\\Dropbox\\Work\\Year 3\\Project\\Datasets\\MAUI\\MAUI\\citeulike180\\all\\");
         //File folder = new File("D:\\Dropbox\\Work\\Year 3\\Project\\Datasets\\MAUI\\MAUI\\fao780");
         //File folder = new File("D:\\Project_Temp\\Combined_Data\\");
-
+/*
         for (final File fileEntry : folder.listFiles()) {
             if (!fileEntry.isDirectory()) {
                 String fName = fileEntry.getName().substring(0, fileEntry.getName().lastIndexOf('.'));
