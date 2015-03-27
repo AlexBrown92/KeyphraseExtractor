@@ -18,7 +18,7 @@ public class Term {
     private double avgPos; // 3
     private double firstSentence; // 4
     private double lastSentence; // 5
-    private short numberOfWords; 
+    private short numberOfWords;
     private boolean inFirstSentence; // 6
     private boolean inLastSentence; // TODO
     private boolean hasProperNoun; // TODO?
@@ -58,7 +58,7 @@ public class Term {
         String mostFrequent = "";
         int highestFrequency = 0;
         for (Object term : this.occurrences.keySet()) {
-            if ((int) this.occurrences.get(term) > highestFrequency){
+            if ((int) this.occurrences.get(term) > highestFrequency) {
                 highestFrequency = (int) this.occurrences.get(term);
                 mostFrequent = (String) term;
             }
@@ -82,79 +82,77 @@ public class Term {
             this.occurrences.put(term, 1);
         }
     }
-    
-    public void updateAvgPos(double newValue){
+
+    public void updateAvgPos(double newValue) {
         this.avgPos = recalcAvg(this.avgPos, newValue, this.getTermCount());
     }
-    
-    public void updateAverageSentencePos(double newValue){
+
+    public void updateAverageSentencePos(double newValue) {
         this.averageSentencePos = recalcAvg(this.averageSentencePos, newValue, this.getTermCount());
     }
-    
-    public void updateAverageParagraphPos(double newValue){
+
+    public void updateAverageParagraphPos(double newValue) {
         this.averageParagraphPos = recalcAvg(this.averageParagraphPos, newValue, this.getTermCount());
     }
-    
+
     // Used to recalculate a mean with a new value added
-    private double recalcAvg(double currentAvg, double newValue, int newTotal){
-        double newAvg = currentAvg * (newTotal -1);
+    private double recalcAvg(double currentAvg, double newValue, int newTotal) {
+        double newAvg = currentAvg * (newTotal - 1);
         newAvg = (newAvg + newValue) / newTotal;
         return newAvg;
     }
-    
-    public int getTermCount(){
+
+    public int getTermCount() {
         int count = 0;
         for (Object occCount : this.occurrences.values()) {
             count += (int) occCount;
         }
         return count;
     }
-    
+
     /*
-    *
-    * The following functions are to make life easier for simply incrementing 
-    * values
-    *
-    */
-    
-    public void incrementFreqInFirst20(int docLength){
-        this.freqInFirst20 =+  1 / (0.2 * ((double) docLength));
+     *
+     * The following functions are to make life easier for simply incrementing 
+     * values
+     *
+     */
+    public void incrementFreqInFirst20(int docLength) {
+        this.freqInFirst20 = +1 / (0.2 * ((double) docLength));
     }
-    
-    public void incrementFreqInFirst10(int docLength){
+
+    public void incrementFreqInFirst10(int docLength) {
         this.freqInFirst10 += 1 / (0.1 * ((double) docLength));
     }
-    
-    public void incrementFreqInLast20(int docLength){
+
+    public void incrementFreqInLast20(int docLength) {
         this.freqInLast20 += 1 / (0.2 * ((double) docLength));
     }
-    
-    public void incrementFreqInLast10(int docLength){
+
+    public void incrementFreqInLast10(int docLength) {
         this.freqInLast10 += 1 / (0.1 * ((double) docLength));
     }
-    
-    public void incrementFreqInFirst1P(int paraLength){
+
+    public void incrementFreqInFirst1P(int paraLength) {
         this.freqInFirst1P += 1 / (double) paraLength;
     }
-    
-    public void incrementFreqInFirst2P(int paraLength){
+
+    public void incrementFreqInFirst2P(int paraLength) {
         this.freqInFirst2P += 1 / (double) paraLength;
     }
-    
-    public void incrementFreqInLast1P(int paraLength){
+
+    public void incrementFreqInLast1P(int paraLength) {
         this.freqInLast1P += 1 / (double) paraLength;
     }
-    
-    public void incrementFreqInLast2P(int paraLength){
+
+    public void incrementFreqInLast2P(int paraLength) {
         this.freqInLast2P += 1 / (double) paraLength;
     }
-    
-    /*
-    *
-    * Only Getters and Setters Beyond here
-    *
-    */
 
+    /*
+     *
+     * Only Getters and Setters Beyond here
+     *
+     */
     public Map getOccurrences() {
         return occurrences;
     }

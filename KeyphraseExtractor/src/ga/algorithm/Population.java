@@ -10,7 +10,6 @@ import java.util.Random;
 public class Population {
 
     //private Individual[] population;
-
     private ArrayList<Individual> population;
     private Random rn;
 
@@ -54,8 +53,8 @@ public class Population {
         return mean;
     }
 
-    public int calculateFitnessSum() {
-        int sum = 0;
+    public double calculateFitnessSum() {
+        double sum = 0;
         for (Individual ind : population) {
             sum += ind.getFitness();
         }
@@ -63,8 +62,8 @@ public class Population {
     }
 
     public Individual getFittestIndividual() {
-        double best = 0;
-        Individual bestInd = null;
+        Individual bestInd = population.get(0);
+        double best = bestInd.getFitness();
         for (Individual ind : population) {
             if (ind.getFitness() > best) {
                 best = ind.getFitness();
@@ -72,6 +71,18 @@ public class Population {
             }
         }
         return bestInd;
+    }
+
+    public Individual getWorstIndividual() {
+        Individual worstInd = population.get(0);
+        double worst = worstInd.getFitness();
+        for (Individual ind : population) {
+            if (ind.getFitness() <= worst) {
+                worst = ind.getFitness();
+                worstInd = ind;
+            }
+        }
+        return worstInd;
     }
 
     public double calculateBestFitness() {
@@ -100,16 +111,15 @@ public class Population {
         return population.toArray().length;
     }
 
-    public Population selectParents() {
+    public Population selectParents(int tournamentSize) {
         Population parents = new Population();
-        for (int i = 0; i < this.getSize(); i++) {
-            Individual parent1 = population.get(rn.nextInt(this.getSize() - 1));
-            Individual parent2 = population.get(rn.nextInt(this.getSize() - 1));
-            if (parent1.getFitness() > parent2.getFitness()) {
-                parents.addIndividual(parent1);
-            } else {
-                parents.addIndividual(parent2);
+        Population tournament = new Population();
+        for (int i = 0; i < this.getSize(); i++) {          
+            for (int j = 0; j < tournamentSize; j++) {
+                tournament.addIndividual(population.get(rn.nextInt(this.getSize()-1)));
             }
+            parents.addIndividual(tournament.getFittestIndividual());
+            tournament.clear();
         }
         return parents;
     }
@@ -132,9 +142,9 @@ public class Population {
         this.setPopulation(childPop);
     }
 
-    public void mutatePopulation(double rate) {
+    public void mutatePopulation(double rate, double maxMutation) {
         for (Individual ind : population) {
-            ind = ind.mutate(rate);
+            ind = ind.mutate(rate, maxMutation);
         }
     }
 

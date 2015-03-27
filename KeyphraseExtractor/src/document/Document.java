@@ -19,18 +19,20 @@ public class Document {
         this.terms = new HashMap<>();
         String[] pTemp = text.split("\n");
         IteratedLovinsStemmer stemmer = new IteratedLovinsStemmer();
-        this.length = text.replace("\n\r", " ").replace("\r\n", " ").split(" ").length;
+        //this.length = text.replace("\n\r", " ").replace("\r\n", " ").split(" ").length + 1;
 
         int wordNum = 0;
-        
+        this.length = 0;
         // Populate Paragraphs ArrayList
         for (String para : pTemp) {
             // Check to see if paragraph is empty
             if (!para.equals("\r") && !para.trim().isEmpty()) {
                 Paragraph p = new Paragraph(para);
                 paragraphs.add(p);
+                this.length += p.toString().split(" ").length;
             }
         }
+        
 
         // Identify Terms
         for (short pCount = 0; pCount < paragraphs.size(); pCount++) {
@@ -47,7 +49,9 @@ public class Document {
                     String stemmed = stemmer.stem(word.toLowerCase());
                     // Make sure term isn't on the stop words list
                     if (!stopWords.contains(word) && !stopWords.contains(stemmed)) {
-                        addTerm(word, stemmed, ((double) wordNum / (double) this.length), pCount, ((double) i / (double) words.length), ((double) wordInParagraph / (double) paragraphSize), sCount);
+                        double wordPos = ((double) wordNum / (double) this.length);
+                        double sentencePos = (double) i / (double) words.length;
+                        addTerm(word, stemmed, wordPos, pCount, sentencePos, ((double) wordInParagraph / (double) paragraphSize), sCount);
                         // If there are still more words
                         if (words.length > i + 1) {
                             String word2 = words[i + 1].trim();
@@ -56,7 +60,7 @@ public class Document {
                             String combinedTerm = word.concat(" " + word2);
                             // Don't end a term with a stop word
                             if (!stopWords.contains(word2.toLowerCase())) {
-                                addTerm(combinedTerm, combinedStem, ((double) wordNum / (double) this.length), pCount, ((double) i / (double) words.length), ((double) wordInParagraph / (double) paragraphSize), sCount);
+                                addTerm(combinedTerm, combinedStem, wordPos, pCount, sentencePos, ((double) wordInParagraph / (double) paragraphSize), sCount);
                             }
                             if (words.length > i + 2) {
                                 String word3 = words[i + 2].trim();
@@ -64,7 +68,7 @@ public class Document {
                                 if (!stopWords.contains(word3.toLowerCase())) {
                                     combinedStem = combinedStem.concat(" " + stem3);
                                     combinedTerm = combinedTerm.concat(" " + word3);
-                                    addTerm(combinedTerm, combinedStem, ((double) wordNum / (double) this.length), pCount, ((double) i / (double) words.length), ((double) wordInParagraph / (double) paragraphSize), sCount);
+                                    addTerm(combinedTerm, combinedStem, wordPos, pCount, sentencePos, ((double) wordInParagraph / (double) paragraphSize), sCount);
                                 }
                             }
                         }
@@ -78,7 +82,7 @@ public class Document {
         // For performance reasons, get rid of any term with a frequency of 1
         ArrayList<String> removeList = new ArrayList<>();
         for (String key : terms.keySet()) {
-            if (terms.get(key).getTermCount()== 1){
+            if (terms.get(key).getTermCount() == 1) {
                 removeList.add(key);
             }
         }
@@ -119,9 +123,9 @@ public class Document {
                 }
             }
             if (paragraph >= (paragraphs.size() - 2)) {
-                terms.get(stemmed).incrementFreqInLast2P((this.paragraphs.get(this.paragraphs.size()-1).getLength() + this.paragraphs.get(this.paragraphs.size()-2).getLength()));
+                terms.get(stemmed).incrementFreqInLast2P((this.paragraphs.get(this.paragraphs.size() - 1).getLength() + this.paragraphs.get(this.paragraphs.size() - 2).getLength()));
                 if (paragraph >= (paragraphs.size() - 1)) {
-                    terms.get(stemmed).incrementFreqInLast1P(this.paragraphs.get(this.paragraphs.size()-1).getLength());
+                    terms.get(stemmed).incrementFreqInLast1P(this.paragraphs.get(this.paragraphs.size() - 1).getLength());
                 }
             }
         }

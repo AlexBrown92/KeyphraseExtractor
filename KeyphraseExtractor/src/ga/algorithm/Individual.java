@@ -68,7 +68,7 @@ public class Individual {
         return point;
     }
 
-    public Individual mutate(double mutationRate) {
+    public Individual mutate(double mutationRate, double maxMutation) {
         double[] tempGene = this.gene;
         for (int i = 0; i < tempGene.length; i++) {
             if (rn.nextDouble() <= mutationRate) {
@@ -77,9 +77,9 @@ public class Individual {
                 } else {
                     double modifier;
                     if (rn.nextBoolean()) {
-                        modifier = rn.nextDouble() * 0.1;
+                        modifier = rn.nextDouble() * 0.2;
                     } else {
-                        modifier = -(rn.nextDouble() * 0.1);
+                        modifier = -(rn.nextDouble() * 0.2);
                     }
                     if ((tempGene[i] + modifier) > 1) {
                         tempGene[i] = 1;
