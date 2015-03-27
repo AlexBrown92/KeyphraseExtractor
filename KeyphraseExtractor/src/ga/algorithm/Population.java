@@ -45,7 +45,7 @@ public class Population {
 
     public void runFitnessAll() {
         for (Individual ind : population) {
-            //ind.updateFitness();
+            ind.updateFitness();
         }
     }
 
@@ -63,7 +63,7 @@ public class Population {
     }
 
     public Individual getFittestIndividual() {
-        int best = 0;
+        double best = 0;
         Individual bestInd = null;
         for (Individual ind : population) {
             if (ind.getFitness() > best) {
@@ -74,8 +74,8 @@ public class Population {
         return bestInd;
     }
 
-    public int calculateBestFitness() {
-        int best = 0;
+    public double calculateBestFitness() {
+        double best = 0;
         for (Individual ind : population) {
             if (ind.getFitness() > best) {
                 best = ind.getFitness();

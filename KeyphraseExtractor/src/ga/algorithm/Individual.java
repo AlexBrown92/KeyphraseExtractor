@@ -10,7 +10,7 @@ import java.util.Random;
 public class Individual {
 
     private double[] gene;
-    private int fitness;
+    private double fitness;
     private Random rn;
 
     public Individual(int size) {
@@ -94,6 +94,10 @@ public class Individual {
         }
         return new Individual(tempGene);
     }
+    
+    public void updateFitness() {
+        this.fitness = GA.calculateFitness(this);
+    }
 
     public String displayGene() {
         String out = "";
@@ -119,11 +123,11 @@ public class Individual {
         this.gene = gene;
     }
 
-    public int getFitness() {
+    public double getFitness() {
         return fitness;
     }
 
-    public void setFitness(int fitness) {
+    public void setFitness(double fitness) {
         this.fitness = fitness;
     }
 }
