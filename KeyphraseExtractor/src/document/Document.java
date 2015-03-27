@@ -96,7 +96,7 @@ public class Document {
                 }
             } else {
                 terms.get(stemmed).addOccurrence(term, this.length);
-                terms.get(stemmed).setLastParagraph(paragraph);
+                terms.get(stemmed).setLastParagraph((double) paragraph / (double) this.paragraphs.size());
                 terms.get(stemmed).updateAvgPos(position);
                 terms.get(stemmed).updateAverageSentencePos(sentencePos);
                 terms.get(stemmed).updateAverageParagraphPos(paragraphPos);
