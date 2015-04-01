@@ -25,7 +25,7 @@ public class TestMain {
     public static void main(String[] args) throws FileNotFoundException, IOException {
         ArrayList<TestDocument> trainingData = new ArrayList<>();
 
-        File stopWordsFile = new File("D:\\Dropbox\\Work\\Year 3\\Project\\Resources\\mysql_stopwords.txt");
+        File stopWordsFile = new File("mysql_stopwords.txt");
         Scanner stopWordsScan = new Scanner(stopWordsFile);
         ArrayList<String> stopWords = new ArrayList<>();
         while (stopWordsScan.hasNextLine()) {
@@ -74,7 +74,7 @@ public class TestMain {
             }
         }
         DocumentAnalyser da = new DocumentAnalyser();
-        GA ga = new GA(da, trainingData);
+        GA ga = new GA(da, trainingData, true);
         ga.run();
         System.out.println("");
         /*

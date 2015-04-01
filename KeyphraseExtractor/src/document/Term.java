@@ -20,9 +20,6 @@ public class Term {
     private double lastSentence; // 5
     private short numberOfWords;
     private boolean inFirstSentence; // 6
-    private boolean inLastSentence; // TODO
-    private boolean hasProperNoun; // TODO?
-    private int x2Score; // TODO?
     private double firstParagraph; // 7
     private double lastParagraph; // 8
     private double averageSentencePos; // 9
@@ -223,30 +220,6 @@ public class Term {
 
     public void setInFirstSentence(boolean inFirstSentence) {
         this.inFirstSentence = inFirstSentence;
-    }
-
-    public boolean isInLastSentence() {
-        return inLastSentence;
-    }
-
-    public void setInLastSentence(boolean inLastSentence) {
-        this.inLastSentence = inLastSentence;
-    }
-
-    public boolean isHasProperNoun() {
-        return hasProperNoun;
-    }
-
-    public void setHasProperNoun(boolean hasProperNoun) {
-        this.hasProperNoun = hasProperNoun;
-    }
-
-    public int getX2Score() {
-        return x2Score;
-    }
-
-    public void setX2Score(int x2Score) {
-        this.x2Score = x2Score;
     }
 
     public double getFirstParagraph() {
