@@ -10,11 +10,15 @@ import java.util.ArrayList;
  */
 public class DocumentAnalyser {
 
-    public ArrayList<String> analyse(Document doc, double[] rules) {
+    public ArrayList<String> analyse(Document doc, double[] rules, int numSubrules) {
         ArrayList<String> selectedTerms = new ArrayList<>();
         for (Term t : doc.getTerms().values()) {
             boolean isMatching = true;
-            for (int i = 0; i < rules.length; i += 3) {
+            int i = 0;
+            int subrule = 1;
+            //for (int i = 0; i < rules.length; i += (3*numSubrules)) {
+            // Iterate through rule chunks
+            while (i < rules.length) {
                 int selected = (int) rules[i];
                 double ub, lb;
                 if (rules[i + 1] > rules[i + 2]) {
@@ -54,13 +58,13 @@ public class DocumentAnalyser {
                     case 7:
                         stat = t.getFirstParagraph();
                         break;
-                    case 8: 
+                    case 8:
                         stat = t.getLastParagraph();
                         break;
                     case 9:
                         stat = t.getAverageSentencePos();
                         break;
-                    case 10: 
+                    case 10:
                         stat = t.getAverageParagraphPos();
                         break;
                     case 11:
@@ -69,13 +73,13 @@ public class DocumentAnalyser {
                     case 12:
                         stat = t.getFreqInFirst20();
                         break;
-                    case 13: 
+                    case 13:
                         stat = t.getFreqInLast10();
                         break;
                     case 14:
                         stat = t.getFreqInLast20();
                         break;
-                    case 15: 
+                    case 15:
                         stat = t.getFreqInFirst1P();
                         break;
                     case 16:
@@ -84,19 +88,28 @@ public class DocumentAnalyser {
                     case 17:
                         stat = t.getFreqInLast1P();
                         break;
-                    case 18: 
+                    case 18:
                         stat = t.getFreqInLast2P();
                         break;
                     default:
                         stat = -1;
                 }
-                if ((stat < lb) || (stat > ub)){
+                if ((stat < lb) || (stat > ub)) {
                     isMatching = false;
                 }
+                i += 3;
+                if (subrule == numSubrules) {
+                    if (isMatching) {
+                        selectedTerms.add(t.getMostFrequentOccurrence());
+                        break;
+                    } else {
+                        isMatching = true;
+                    }
+                    subrule = 1;
+                }
+                subrule++;
             }
-            if (isMatching){
-                selectedTerms.add(t.getMostFrequentOccurrence());
-            }
+
         }
         return selectedTerms;
     }

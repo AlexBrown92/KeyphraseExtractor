@@ -18,13 +18,19 @@ public class GA {
 
     private Properties prop;
     private int geneSize;
+    private static int numSubrules;
     private Population pop;
     private static DocumentAnalyser da;
     private static ArrayList<TestDocument> testData;
     private static ArrayList<TestDocument> trainingData;
+    private static boolean debug;
 
-    public GA(DocumentAnalyser da, ArrayList<TestDocument> dataset) {
+    public GA(DocumentAnalyser da, ArrayList<TestDocument> dataset, boolean debug) {
         Random rn = new Random();
+        this.debug = debug;
+        if (debug) {
+            System.out.println("Initialising GA");
+        }
         // Get known properties for the GA stored in training.properties file
         prop = new Properties();
         InputStream input = null;
@@ -52,14 +58,17 @@ public class GA {
         }
         this.trainingData = new ArrayList<>();
         trainingData.addAll(dataset);
-
-        this.geneSize = Integer.parseInt(prop.getProperty("number_of_rules", "10")) * 3;
+        this.numSubrules = Integer.parseInt(prop.getProperty("number_of_subrules", "3"));
+        this.geneSize = Integer.parseInt(prop.getProperty("number_of_rules", "3")) * numSubrules * 3;
         this.pop = new Population(Integer.parseInt(prop.getProperty("population_size", "100")), this.geneSize);
         this.da = da;
         pop.runFitnessAll();
     }
 
-    public double[] run() {
+    public void run() {
+        if (debug) {
+            System.out.println("GA Run started");
+        }
         String dirPath = prop.getProperty("log_location", "C:\\temp");
 
         // Timestamp for use in the directory name to ensure that it's unique
@@ -69,13 +78,17 @@ public class GA {
         File dir = new File(dirPath + timeStamp + "\\");
         if (!dir.exists()) {
             dir.mkdir();
+            if (debug) {
+                System.out.println("Creating Directory: " + dir.getAbsolutePath());
+            }
         }
         // Create a settings file and enter run settings values
         File s = new File(dirPath + timeStamp + "\\settings.txt");
         try {
             PrintWriter settings = new PrintWriter(s, "UTF-8");
             settings.println("population_size: " + prop.getProperty("population_size", "100"));
-            settings.println("number_of_rules: " + prop.getProperty("number_of_rules", "10"));
+            settings.println("number_of_rules: " + prop.getProperty("number_of_rules", "3"));
+            settings.println("number_of_rules: " + numSubrules);
             settings.println("max_runs: " + prop.getProperty("max_runs", "5000"));
             settings.println("tournament_size: " + prop.getProperty("tournament_size", "5"));
             settings.println("mutation_rate: " + prop.getProperty("mutation_rate", "0.0333333"));
@@ -105,19 +118,90 @@ public class GA {
                 writer.print(i + "," + parents.calculateFitnessMean() + "," + generationBest.getFitness() + ',' + generationBest.displayGene() + "\n");
             }
             writer.close();
-            return generationBest.getGene();
+            System.out.println("End of Training");
+            System.out.println("Testing commencing...");
+            File testFile = new File(dirPath + timeStamp + "\\results.csv"); // Desktop
+            PrintWriter results = new PrintWriter(testFile, "UTF-8");
+            results.println("Document Name,Known Keyphrases,Extracted Keyphrases,Precision,Recall,F-Score");
+            double fitness = 0;
+            int count = 0;
+            for (TestDocument testDoc : testData) {
+                System.out.println("Testing: " + testDoc.getDocName());
+                results.print(testDoc.getDocName() + ",");
+                ArrayList<String> selectedKeywords = da.analyse(testDoc, generationBest.getGene(), numSubrules);
+                System.out.print("Known Keywords: ");
+                for (String knownKeyword : testDoc.getKnownKeywords()) {
+                    results.print(knownKeyword + ":");
+                    System.out.print(knownKeyword + ", ");
+                }
+                System.out.print("\n");
+                results.print(",");
+                System.out.print("Selected Keywords: ");
+                for (String selectedKeyword : selectedKeywords) {
+                    results.print(selectedKeyword + ":");
+                    System.out.print(selectedKeyword + ", ");
+                }
+                System.out.print("\n");
+                results.print(",");
+                double tp = 0; // True Positive
+                double fp = 0; // False Positive
+                double fn = 0; // False Negative
+                if (!selectedKeywords.isEmpty()) {
+                    for (String knownKeyword : testDoc.getKnownKeywords()) {
+                        if (selectedKeywords.contains(knownKeyword)) {
+                            selectedKeywords.remove(knownKeyword);
+                            tp += 1;
+                        } else {
+                            fn += 1;
+                        }
+                    }
+                } else {
+                    fn = testDoc.getKnownKeywords().size();
+                }
+                fp = selectedKeywords.size();
+                double precision = 0;
+                if (tp != 0) {
+                    precision = tp / (tp + fp);
+                }
+
+                double recall = tp / (tp + fn);
+                double f1 = 0;
+                if ((precision + recall) != 0) {
+                    f1 = 2 * ((precision * recall) / (precision + recall));
+                }
+                System.out.println("Precision: " + precision + " Recall: " + recall + " F-Score: " + f1);
+                results.print(precision + "," + recall + "," + f1 + "\n");
+                fitness = (((fitness * count) + f1) / (count + 1));
+                //fitness = (((fitness * count) + precision) / (count + 1));
+                count++;
+            }
+            System.out.println("End Test");
+            System.out.println("Test average f score: " + fitness);
+            results.close();
+            File collationFile = new File(dirPath + "combined_results.csv");
+            FileWriter fw = new FileWriter(collationFile, true);
+            fw.append("" + prop.getProperty("population_size", "100") + "," + prop.getProperty("number_of_rules", "3") + "," + numSubrules + "," + prop.getProperty("max_runs", "5000") + "," + prop.getProperty("tournament_size", "5") + "," + prop.getProperty("mutation_rate", "0.0333333") + "," + prop.getProperty("max_mutation", "0.2") + "," + prop.getProperty("crissover_rate", "0.9") + "," + prop.getProperty("test_percentage", "0.2") + "," + fitness);
+            for (double genePart  : generationBest.getGene()) {
+                fw.append(","+genePart+"");
+            }
+            fw.append("\n");
+            fw.close();
+            Properties config = new Properties();
+            config.setProperty("subrules", Integer.toString(numSubrules));
+            config.setProperty("gene", generationBest.displayGene());
+            FileOutputStream configOut = new FileOutputStream("config.properties");
+            config.store(configOut, timeStamp);
+            configOut.close();
         } catch (IOException ex) {
             System.out.println(ex);
         }
-
-        return null;
     }
 
     public static double calculateFitness(Individual ind) {
         double fitness = 0;
         int count = 0;
         for (TestDocument d : trainingData) {
-            ArrayList<String> selectedKeywords = da.analyse(d, ind.getGene());
+            ArrayList<String> selectedKeywords = da.analyse(d, ind.getGene(), numSubrules);
             double tp = 0; // True Positive
             double fp = 0; // False Positive
             double fn = 0; // False Negative
@@ -125,9 +209,9 @@ public class GA {
                 for (String knownKeyword : d.getKnownKeywords()) {
                     if (selectedKeywords.contains(knownKeyword)) {
                         selectedKeywords.remove(knownKeyword);
-                        tp = +1;
+                        tp += 1;
                     } else {
-                        fn = +1;
+                        fn += 1;
                     }
                 }
             } else {
@@ -138,14 +222,14 @@ public class GA {
             if (tp != 0) {
                 precision = tp / (tp + fp);
             }
-            /*
-             double recall = tp / (tp + fn);
-             double f1 = 0;
-             if ((precision + recall) != 0) {
-             f1 = 2 * ((precision * recall) / (precision + recall));
-             }
-             fitness = (((fitness * count) + f1) / (count + 1));*/
-            fitness = (((fitness * count) + precision) / (count + 1));
+
+            double recall = tp / (tp + fn);
+            double f1 = 0;
+            if ((precision + recall) != 0) {
+                f1 = 2 * ((precision * recall) / (precision + recall));
+            }
+            fitness = (((fitness * count) + f1) / (count + 1));
+            //fitness = (((fitness * count) + precision) / (count + 1));
             count++;
         }
         return fitness;
