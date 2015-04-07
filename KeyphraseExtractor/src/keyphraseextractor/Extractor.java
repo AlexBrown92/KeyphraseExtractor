@@ -1,6 +1,8 @@
+package keyphraseextractor;
 
-import document.Document;
-import documentanalyser.DocumentAnalyser;
+
+import keyphraseextractor.document.Document;
+import keyphraseextractor.documentanalyser.DocumentAnalyser;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;

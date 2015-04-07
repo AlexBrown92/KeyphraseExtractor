@@ -1,9 +1,11 @@
+package keyphraseextractor;
+
 
 /**
  *
  * @author Alex
  */
-public class KeywordExtractor {
+public class KeyphraseExtractor {
 
     /**
      * @param args the command line arguments

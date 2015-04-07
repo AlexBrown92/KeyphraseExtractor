@@ -1,8 +1,8 @@
-package document;
+package keyphraseextractor.document;
 
+import keyphraseextractor.stemmer.IteratedLovinsStemmer;
 import java.util.ArrayList;
 import java.util.HashMap;
-import stemmer.*;
 
 /**
  *

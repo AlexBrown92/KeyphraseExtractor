@@ -1,4 +1,4 @@
-package document;
+package keyphraseextractor.document;
 
 import java.util.Map;
 import java.util.HashMap;

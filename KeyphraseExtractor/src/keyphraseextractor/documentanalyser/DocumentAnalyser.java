@@ -1,7 +1,7 @@
-package documentanalyser;
+package keyphraseextractor.documentanalyser;
 
-import document.Document;
-import document.Term;
+import keyphraseextractor.document.Document;
+import keyphraseextractor.document.Term;
 import java.util.ArrayList;
 
 /**

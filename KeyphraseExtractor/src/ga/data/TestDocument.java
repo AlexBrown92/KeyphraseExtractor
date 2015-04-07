@@ -1,6 +1,6 @@
 package ga.data;
 
-import document.Document;
+import keyphraseextractor.document.Document;
 import java.util.ArrayList;
 
 /**

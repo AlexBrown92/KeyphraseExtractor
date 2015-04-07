@@ -1,6 +1,6 @@
 package ga.algorithm;
 
-import documentanalyser.DocumentAnalyser;
+import keyphraseextractor.documentanalyser.DocumentAnalyser;
 import ga.data.TestDocument;
 import java.io.*;
 import java.text.DecimalFormat;
