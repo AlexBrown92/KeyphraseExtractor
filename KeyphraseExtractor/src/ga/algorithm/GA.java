@@ -114,6 +114,7 @@ public class GA {
                     parents.addIndividual(generationBest);
                 }
                 generationBest = parents.getFittestIndividual();
+                pop = parents;
                 System.out.println("Run #" + i + " Mean:\t" + df.format(parents.calculateFitnessMean()) + " Best: (" + df.format(generationBest.getFitness()) + ")\t" + generationBest.displayGene());
                 writer.print(i + "," + parents.calculateFitnessMean() + "," + generationBest.getFitness() + ',' + generationBest.displayGene() + "\n");
             }
