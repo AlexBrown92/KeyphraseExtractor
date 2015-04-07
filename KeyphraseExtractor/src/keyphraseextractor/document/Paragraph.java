@@ -1,4 +1,4 @@
-package Document;
+package keyphraseextractor.document;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,7 +12,7 @@ public class Paragraph {
     ArrayList<String> sentences;
 
     public Paragraph(String text) {
-        String[] s_temp = text.split("\\.");
+        String[] s_temp = text.split("\\.?!");
         sentences = new ArrayList<>();
         for (String sentence : s_temp) {
             if (!sentence.equals("\r") && !sentence.trim().isEmpty()){
@@ -28,6 +28,10 @@ public class Paragraph {
 
     public void setSentences(ArrayList<String> sentences) {
         this.sentences = sentences;
+    }
+    
+    public int getLength(){
+        return this.toString().split(" ").length;
     }
 
     @Override

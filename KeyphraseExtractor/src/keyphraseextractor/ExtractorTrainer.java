@@ -1,5 +1,7 @@
+package keyphraseextractor;
 
-import documentanalyser.DocumentAnalyser;
+
+import keyphraseextractor.documentanalyser.DocumentAnalyser;
 import ga.algorithm.GA;
 import ga.data.TestDocument;
 import java.io.File;
