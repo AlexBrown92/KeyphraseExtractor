@@ -102,7 +102,7 @@ public class GA {
             // Write in the column headers
             writer.println("Run #,Mean,Best Fitness,Best Gene");
 
-            DecimalFormat df = new DecimalFormat("#.00000");
+            DecimalFormat df = new DecimalFormat("#.000000");
             Individual generationBest = pop.getFittestIndividual();
             for (int i = 0; i < Integer.parseInt(prop.getProperty("max_runs", "5000")); i++) {
                 Population parents = pop.selectParents(Integer.parseInt(prop.getProperty("tournament_size", "5")));
@@ -114,9 +114,11 @@ public class GA {
                     parents.addIndividual(generationBest);
                 }
                 generationBest = parents.getFittestIndividual();
-                pop = parents;
+
                 System.out.println("Run #" + i + " Mean:\t" + df.format(parents.calculateFitnessMean()) + " Best: (" + df.format(generationBest.getFitness()) + ")\t" + generationBest.displayGene());
                 writer.print(i + "," + parents.calculateFitnessMean() + "," + generationBest.getFitness() + ',' + generationBest.displayGene() + "\n");
+                pop = parents;
+
             }
             writer.close();
             System.out.println("End of Training");
@@ -182,8 +184,8 @@ public class GA {
             File collationFile = new File(dirPath + "combined_results.csv");
             FileWriter fw = new FileWriter(collationFile, true);
             fw.append("" + prop.getProperty("population_size", "100") + "," + prop.getProperty("number_of_rules", "3") + "," + numSubrules + "," + prop.getProperty("max_runs", "5000") + "," + prop.getProperty("tournament_size", "5") + "," + prop.getProperty("mutation_rate", "0.0333333") + "," + prop.getProperty("max_mutation", "0.2") + "," + prop.getProperty("crissover_rate", "0.9") + "," + prop.getProperty("test_percentage", "0.2") + "," + fitness);
-            for (double genePart  : generationBest.getGene()) {
-                fw.append(","+genePart+"");
+            for (double genePart : generationBest.getGene()) {
+                fw.append("," + genePart + "");
             }
             fw.append("\n");
             fw.close();

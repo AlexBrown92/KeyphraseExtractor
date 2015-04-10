@@ -29,7 +29,7 @@ public class Document {
             if (!para.equals("\r") && !para.trim().isEmpty()) {
                 Paragraph p = new Paragraph(para);
                 paragraphs.add(p);
-                this.length += p.toString().split(" ").length;
+                this.length += p.toString().replaceAll("\r", "").split(" ").length;
             }
         }
         
