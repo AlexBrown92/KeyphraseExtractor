@@ -1,6 +1,5 @@
 package keyphraseextractor;
 
-
 import keyphraseextractor.document.Document;
 import keyphraseextractor.document.Paragraph;
 import keyphraseextractor.document.Term;
@@ -35,23 +34,27 @@ public class TestMain {
         }
         stopWords.add("-"); // Needed to stop problems with spaced hyphons
         stopWords.add("a"); // Not sure why this was ever missing
-        
-        /*
-         File in = new File("D:\\Dropbox\\Work\\Year 3\\Project\\Resources\\input_test.txt");
-         //File in = new File("D:\\Dropbox\\Work\\Year 3\\Project\\Datasets\\MAUI\\MAUI\\fao30\\all\\a0011e00.txt");
-         Scanner scan = new Scanner(in);
-         scan.useDelimiter("\\Z");
-         String text = scan.next();
-        */
-         
+
+        File in = new File("D:\\Dropbox\\Work\\Year 3\\Project\\Resources\\test.txt");
+        //File in = new File("D:\\Dropbox\\Work\\Year 3\\Project\\Datasets\\MAUI\\MAUI\\fao30\\all\\a0011e00.txt");
+        Scanner scan = new Scanner(in);
+        scan.useDelimiter("\\Z");
+        String inText = scan.next();
+
         File folder = new File("D:\\Dropbox\\Work\\Year 3\\Project\\Datasets\\MAUI\\MAUI\\citeulike180\\all\\");
         //File folder = new File("D:\\Dropbox\\Work\\Year 3\\Project\\Datasets\\MAUI\\MAUI\\fao780");
         //File folder = new File("D:\\Project_Temp\\Combined_Data\\");
+        DocumentAnalyser da = new DocumentAnalyser();
+
+        tc1(inText, stopWords);
+        
+        Document d = new Document(inText, stopWords);
+        tc2(d);
+        
         int i = 0;
         for (final File fileEntry : folder.listFiles()) {
             if (!fileEntry.isDirectory()) {
                 String fName = fileEntry.getName().substring(0, fileEntry.getName().lastIndexOf('.'));
-                System.out.println(fileEntry.getName());
                 if (fileEntry.getName().endsWith(".txt")) {
                     FileInputStream fis = new FileInputStream(fileEntry);
                     byte[] data = new byte[(int) fileEntry.length()];
@@ -75,21 +78,36 @@ public class TestMain {
                 }
             }
         }
-        DocumentAnalyser da = new DocumentAnalyser();
         GA ga = new GA(da, trainingData, true);
-        ga.run();
-        System.out.println("");
-        /*
-         Document d = new Document(text, stopWords);
+        tc3(ga);
+    }
 
-         for (Paragraph p : d.getParagraphs()) {
-         System.out.println(p.toString());
-         }
+    private static void tc1(String inText, ArrayList<String> stopWords) {
+        System.out.println("Running TC1: ");
+        Document d = new Document(inText, stopWords);
+        for (String key : d.getTerms().keySet()) {
+            System.out.println("TERM: " + key);
+            for (Object full : d.getTerms().get(key).getOccurrences().keySet()) {
+                System.out.println((String) full);
+            }
+        }
+        System.out.println("=============================");
+    }
 
-         for (Term t : d.getTerms().values()) {
-         System.out.println(t.getTermCount() + " | " + t.getFrequency() + " | " + t.getFreqInFirst1P() + " " + t.getFreqInFirst2P() + " " + t.getFreqInLast1P() + " " + t.getFreqInLast2P() + " " + t.getMostFrequentOccurrence());
-         }
-         */
+    private static void tc2(Document d) {
+        System.out.println("Running TC2: ");
+        for (Term t : d.getTerms().values()) {
+            System.out.println(t.getStemmedText() + ": " + t.getFrequency() + " " + t.getFirstPos() + " " + t.getLastPos() + " " + t.getAvgPos() + " " + t.getFirstSentence() + " " + t.getLastSentence() + " " + t.isInFirstSentence() + " " + t.getFirstParagraph() + " " + t.getLastParagraph() + " " + t.getAverageSentencePos() + " " + t.getAverageSentencePos() + " " + t.getFreqInFirst10() + " " + t.getFreqInFirst20() + " " + t.getFreqInLast10() + " " + t.getFreqInLast20() + " " + t.getFreqInFirst1P() + " " + t.getFreqInFirst2P() + " " + t.getFreqInLast1P() + " " + t.getFreqInLast2P());
+        }
+        System.out.println("Length: " + d.getLength());
+        System.out.println("=============================");
+    }
+
+    private static void tc3(GA ga) {
+        for (int i = 0; i < ga.getPop().getSize(); i++) {
+            System.out.println(ga.getPop().getIndividual(i).getFitness() + " " + ga.getPop().getIndividual(i).displayGene());
+            ga.run();
+        }
     }
 
 }
