@@ -37,13 +37,13 @@ public class Document {
         // Identify Terms
         for (short pCount = 0; pCount < paragraphs.size(); pCount++) {
             Paragraph p = paragraphs.get(pCount);
-            int paragraphSize = p.toString().split(" ").length;
+            int paragraphSize = p.toString().replaceAll("\r", "").split(" ").length;
             for (short sCount = 0; sCount < p.getSentences().size(); sCount++) {
                 int wordInParagraph = 0;
                 String s = p.getSentences().get(sCount);
                 //for (String s : p.getSentences()) {
                 s = s.replaceAll("[^A-Za-z0-9 '-]", "");
-                String[] words = s.split(" ");
+                String[] words = s.replaceAll("\r", "").split(" ");
                 for (int i = 0; i < words.length; i++) {
                     String word = words[i].trim();
                     String stemmed = stemmer.stem(word.toLowerCase());
