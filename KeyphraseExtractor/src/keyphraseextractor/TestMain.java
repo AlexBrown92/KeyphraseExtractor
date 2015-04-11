@@ -46,11 +46,11 @@ public class TestMain {
         //File folder = new File("D:\\Project_Temp\\Combined_Data\\");
         DocumentAnalyser da = new DocumentAnalyser();
 
-        tc1(inText, stopWords);
+        //tc1(inText, stopWords);
         
         Document d = new Document(inText, stopWords);
         tc2(d);
-        
+        /*
         int i = 0;
         for (final File fileEntry : folder.listFiles()) {
             if (!fileEntry.isDirectory()) {
@@ -79,7 +79,7 @@ public class TestMain {
             }
         }
         GA ga = new GA(da, trainingData, true);
-        tc3(ga);
+        tc3(ga);*/
     }
 
     private static void tc1(String inText, ArrayList<String> stopWords) {
@@ -104,10 +104,15 @@ public class TestMain {
     }
 
     private static void tc3(GA ga) {
+        System.out.println("Running TC3: ");
         for (int i = 0; i < ga.getPop().getSize(); i++) {
             System.out.println(ga.getPop().getIndividual(i).getFitness() + " " + ga.getPop().getIndividual(i).displayGene());
-            ga.run();
         }
+        ga.run();
+        for (int i = 0; i < ga.getPop().getSize(); i++) {
+            System.out.println(ga.getPop().getIndividual(i).getFitness() + " " + ga.getPop().getIndividual(i).displayGene());
+        }
+        System.out.println("=============================");
     }
 
 }

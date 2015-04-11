@@ -114,35 +114,35 @@ public class Term {
      *
      */
     public void incrementFreqInFirst20(int docLength) {
-        this.freqInFirst20 = +1 / (0.2 * ((double) docLength));
+        this.freqInFirst20 += ((double) 1 / (0.2 * ((double) docLength)));
     }
 
     public void incrementFreqInFirst10(int docLength) {
-        this.freqInFirst10 += 1 / (0.1 * ((double) docLength));
+        this.freqInFirst10 += ((double) 1 / (0.1 * ((double) docLength)));
     }
 
     public void incrementFreqInLast20(int docLength) {
-        this.freqInLast20 += 1 / (0.2 * ((double) docLength));
+        this.freqInLast20 += ((double) 1 / (0.2 * ((double) docLength)));
     }
 
     public void incrementFreqInLast10(int docLength) {
-        this.freqInLast10 += 1 / (0.1 * ((double) docLength));
+        this.freqInLast10 += ((double) 1 / (0.1 * ((double) docLength)));
     }
 
     public void incrementFreqInFirst1P(int paraLength) {
-        this.freqInFirst1P += 1 / (double) paraLength;
+        this.freqInFirst1P += ((double) 1 / (double) paraLength);
     }
 
     public void incrementFreqInFirst2P(int paraLength) {
-        this.freqInFirst2P += 1 / (double) paraLength;
+        this.freqInFirst2P += ((double) 1 / (double) paraLength);
     }
 
     public void incrementFreqInLast1P(int paraLength) {
-        this.freqInLast1P += 1 / (double) paraLength;
+        this.freqInLast1P += ((double) 1 / (double) paraLength);
     }
 
     public void incrementFreqInLast2P(int paraLength) {
-        this.freqInLast2P += 1 / (double) paraLength;
+        this.freqInLast2P += ((double) 1 / (double) paraLength);
     }
 
     /*

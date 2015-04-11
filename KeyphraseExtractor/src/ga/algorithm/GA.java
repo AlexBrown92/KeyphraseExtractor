@@ -93,7 +93,7 @@ public class GA {
             settings.println("tournament_size: " + prop.getProperty("tournament_size", "5"));
             settings.println("mutation_rate: " + prop.getProperty("mutation_rate", "0.0333333"));
             settings.println("max_mutation: " + prop.getProperty("max_mutation", "0.2"));
-            settings.println("crissover_rate: " + prop.getProperty("crissover_rate", "0.9"));
+            settings.println("crossover_rate: " + prop.getProperty("crossover_rate", "0.9"));
             settings.println("test_percentage: " + prop.getProperty("test_percentage", "0.2"));
             settings.close();
 
@@ -106,7 +106,7 @@ public class GA {
             Individual generationBest = pop.getFittestIndividual();
             for (int i = 0; i < Integer.parseInt(prop.getProperty("max_runs", "5000")); i++) {
                 Population parents = pop.selectParents(Integer.parseInt(prop.getProperty("tournament_size", "5")));
-                parents.combine(Double.parseDouble(prop.getProperty("crissover_rate", "0.9")));
+                parents.combine(Double.parseDouble(prop.getProperty("crossover_rate", "0.9")));
                 parents.mutatePopulation(Double.parseDouble(prop.getProperty("mutation_rate", "0.0333333")), Double.parseDouble(prop.getProperty("max_mutation", "0.2")));
                 parents.runFitnessAll();
                 if (parents.getWorstIndividual().getFitness() < generationBest.getFitness()) {
@@ -183,7 +183,7 @@ public class GA {
             results.close();
             File collationFile = new File(dirPath + "combined_results.csv");
             FileWriter fw = new FileWriter(collationFile, true);
-            fw.append("" + prop.getProperty("population_size", "100") + "," + prop.getProperty("number_of_rules", "3") + "," + numSubrules + "," + prop.getProperty("max_runs", "5000") + "," + prop.getProperty("tournament_size", "5") + "," + prop.getProperty("mutation_rate", "0.0333333") + "," + prop.getProperty("max_mutation", "0.2") + "," + prop.getProperty("crissover_rate", "0.9") + "," + prop.getProperty("test_percentage", "0.2") + "," + fitness);
+            fw.append("" + prop.getProperty("population_size", "100") + "," + prop.getProperty("number_of_rules", "3") + "," + numSubrules + "," + prop.getProperty("max_runs", "5000") + "," + prop.getProperty("tournament_size", "5") + "," + prop.getProperty("mutation_rate", "0.0333333") + "," + prop.getProperty("max_mutation", "0.2") + "," + prop.getProperty("crossover_rate", "0.9") + "," + prop.getProperty("test_percentage", "0.2") + "," + fitness);
             for (double genePart : generationBest.getGene()) {
                 fw.append("," + genePart + "");
             }
