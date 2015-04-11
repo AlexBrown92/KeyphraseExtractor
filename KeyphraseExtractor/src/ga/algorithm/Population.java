@@ -13,11 +13,11 @@ public class Population {
     private ArrayList<Individual> population;
     private Random rn;
 
-    public Population(int pop_size, int gene_size) {
+    public Population(int popSize, int geneSize) {
         rn = new Random();
-        population = new ArrayList<>(pop_size);
-        for (int i = 0; i < pop_size; i++) {
-            population.add(i, new Individual(gene_size));
+        population = new ArrayList<>(popSize);
+        for (int i = 0; i < popSize; i++) {
+            population.add(i, new Individual(geneSize));
         }
     }
 
